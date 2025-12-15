@@ -49,17 +49,22 @@ text_posts = {
   }
 }
 
+
 @app.get('/posts')
 def get_posts(limit: int = None):
 
     if limit:
         return list(text_posts.values())[:limit]
-
     return text_posts
+
 
 @app.post('/posts/{id}')
 def get_post_id(id: int):
-
     if id not in text_posts:
         raise HTTPException(404, "Review not available")
     return text_posts.get(id)
+
+
+@app.post('/posts')
+def create_post():
+    pass
