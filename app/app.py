@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from app.schemas import CreatePost, ReturnPost
 
 app = FastAPI()
 
@@ -8,7 +9,6 @@ def home():
 
 text_posts = {
     1: {
-    "review_id": 1,
     "rating": 5,
     "title": "Excellent experience",
     "review_text": "The service was fast, friendly, and exceeded my expectations. I would definitely recommend this to others.",
@@ -16,7 +16,6 @@ text_posts = {
     "date": "2025-01-05"
   },
   2: {
-    "review_id": 2,
     "rating": 4,
     "title": "Very good overall",
     "review_text": "Great quality and good value for the price. There is a little room for improvement, but I am satisfied.",
@@ -24,7 +23,6 @@ text_posts = {
     "date": "2025-01-12"
   },
   3: {
-    "review_id": 3,
     "rating": 3,
     "title": "Average experience",
     "review_text": "The product works as described, but nothing really stood out. It was just okay.",
@@ -32,7 +30,6 @@ text_posts = {
     "date": "2025-02-01"
   },
   4: {
-    "review_id": 4,
     "rating": 2,
     "title": "Disappointing",
     "review_text": "The item arrived late and did not match the description very well. Customer support was slow to respond.",
@@ -40,7 +37,6 @@ text_posts = {
     "date": "2025-02-10"
   },
   5: {
-    "review_id": 5,
     "rating": 1,
     "title": "Very poor",
     "review_text": "Unfortunately, this was a bad experience. The product was defective and I had to request a refund.",
@@ -59,12 +55,14 @@ def get_posts(limit: int = None):
 
 
 @app.post('/posts/{id}')
-def get_post_id(id: int):
+def get_post_id(id: int) -> ReturnPost:
     if id not in text_posts:
         raise HTTPException(404, "Review not available")
     return text_posts.get(id)
 
 
 @app.post('/posts')
-def create_post():
-    pass
+def create_post(post: CreatePost) -> ReturnPost:
+  new_post = {'rating': post.rating, 'review_text': post.review_text, 'reviewer': post.reviewer, 'title': post.title, 'date': post.date}
+  text_posts[max(text_posts) + 1] = new_post
+  return new_post

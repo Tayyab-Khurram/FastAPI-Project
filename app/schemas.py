@@ -12,3 +12,10 @@ class CreatePost(BaseModel):
     review_text: str
     reviewer: str
     date: str
+
+class ReturnPost(BaseModel):
+    submitted: bool
+    rating: int
+    title: str
+    review_text: str
+    date: str
