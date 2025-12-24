@@ -45,17 +45,19 @@ async def upload_file(
         with tempfile.NamedTemporaryFile(
             delete=False, suffix=os.path.splitext(user_ki_file.filename)[1]
         ) as temp_file:
+
             temp_file_path = temp_file.name
             shutil.copyfileobj(user_ki_file.file, temp_file)
 
-            upload_result = imagekit.files.upload(
-                file=open(temp_file_path, "rb"),
-                file_name=user_ki_file.filename,
-                use_unique_file_name=True,
-                tags=["backend-upload"],
-            )
+            with open(temp_file_path, "rb") as f:
+                upload_result = imagekit.files.upload(
+                    file=f.read(),
+                    file_name=user_ki_file.filename,
+                    use_unique_file_name=True,
+                    tags=["backend-upload"],
+                )
 
-            if upload_result.response.status_code == 200:
+            if upload_result.response_metadata.http_status_code == 200:
                 post = Post(
                     caption=caption,
                     url=upload_result.url,
