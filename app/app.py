@@ -56,23 +56,21 @@ async def upload_file(
                     use_unique_file_name=True,
                     tags=["backend-upload"],
                 )
-
-            if upload_result.response_metadata.http_status_code == 200:
-                post = Post(
-                    caption=caption,
-                    url=upload_result.url,
-                    file_type=(
-                        "video"
-                        if user_ki_file.content_type.startswith("video/")
-                        else "image"
-                    ),
-                    file_name=upload_result.name,
-                    created_at=datetime.now(),
-                )
-                session.add(post)
-                await session.commit()
-                await session.refresh(post)
-                return post
+            post = Post(
+                caption=caption,
+                url=upload_result.url,
+                file_type=(
+                    "video"
+                    if user_ki_file.content_type.startswith("video/")
+                    else "image"
+                ),
+                file_name=upload_result.name,
+                created_at=datetime.now(),
+            )
+            session.add(post)
+            await session.commit()
+            await session.refresh(post)
+            return post
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
